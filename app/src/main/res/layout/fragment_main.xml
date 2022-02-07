@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.main.MainFragment">
+
+    <data>
+        <variable
+            name="handler"
+            type="com.example.footprints.ui.main.MainFragment" />
+        <variable
+            name="viewModel"
+            type="com.example.footprints.ui.main.MainViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/current_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@{viewModel.currentAddress}"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="START"
+            android:enabled="@{viewModel.startButtonIsEnabled}"
+            android:onClick="@{() -> handler.onClickStartButton()}"
+            app:layout_constraintStart_toStartOf="@+id/current_location"
+            app:layout_constraintTop_toBottomOf="@+id/current_location" />
+
+        <Button
+            android:id="@+id/stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="STOP"
+            android:enabled="@{viewModel.stopButtonIsEnabled}"
+            android:onClick="@{() -> handler.onClickStopButton()}"
+            app:layout_constraintStart_toEndOf="@+id/start"
+            app:layout_constraintTop_toTopOf="@+id/start" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/start" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
