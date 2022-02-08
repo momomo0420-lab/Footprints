@@ -11,13 +11,26 @@ import com.google.android.gms.location.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
+/**
+ * ロケーションクライアントの実装部分
+ *
+ * @property context コンテキスト
+ * @constructor 引数で指定されたコンテキストを基にロケーションのあれこれを行う
+ */
 class MyLocationClientImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : MyLocationClient {
+    // ロケーションの提供元
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    // 取得したロケーションをどう扱うかはリスナーにお任せ
     private lateinit var listener: (Location) -> Unit
 
+    /**
+     * ロケーションの定期取得を行う
+     *
+     * @param listener リスナー
+     */
     override fun startLocationUpdate(listener: (Location) -> Unit) {
         this.listener = listener
 
@@ -40,6 +53,11 @@ class MyLocationClientImpl @Inject constructor(
         )
     }
 
+    /**
+     * ロケーションの取得条件を作成
+     *
+     * @return ロケーションの取得条件
+     */
     private fun createLocationRequest() : LocationRequest {
         val locationRequest = LocationRequest.create().apply {
             interval = 10000
@@ -50,12 +68,22 @@ class MyLocationClientImpl @Inject constructor(
         return locationRequest
     }
 
+    /**
+     * 取得したロケーションの処理はリスナーにお任せ
+     */
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult) {
             listener(p0.locations[0])
         }
     }
 
+    //TODO この処理本当にここでいいの？
+    /**
+     * 引数のロケーションを住所（文字列）に変換する
+     *
+     * @param location ロケーション
+     * @return ロケーションから導き出された住所（文字列）
+     */
     override fun convertLocationToAddress(location: Location) : String {
         if(!Geocoder.isPresent()) {
             return ""
@@ -67,6 +95,9 @@ class MyLocationClientImpl @Inject constructor(
         return addressList[0].getAddressLine(0).toString()
     }
 
+    /**
+     * ロケーションの定期取得を終了する
+     */
     override fun stopLocationUpdate() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }

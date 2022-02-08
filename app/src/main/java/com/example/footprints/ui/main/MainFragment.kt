@@ -13,14 +13,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.footprints.databinding.FragmentMainBinding
 import com.example.footprints.model.entity.MyLocation
-import com.example.footprints.ui.main.adapter.MyLocationAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
+    // バインディングデータ
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
+    // ビューモデル
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreateView(
@@ -54,6 +55,7 @@ class MainFragment : Fragment() {
         }
     }
 
+    //TODO リスト選択された際の動作。後日ちゃんと作成するかも・・・
     private val onItemSelectedLister = object : (MyLocation) -> Unit {
         override fun invoke(myLocation: MyLocation) {
             val action = MainFragmentDirections.actionMainFragmentToDetailFragment(myLocation)
@@ -66,6 +68,9 @@ class MainFragment : Fragment() {
         _binding = null
     }
 
+    /**
+     * スタートボタンが押された際の動作
+     */
     fun onClickStartButton() {
         if(!checkRequiredPermissions()) {
             requestRequiredPermissions()
@@ -74,10 +79,17 @@ class MainFragment : Fragment() {
         viewModel.startLocationUpdate()
     }
 
+    /**
+     * ストップボタンが押された際の動作
+     */
     fun onClickStopButton() {
         viewModel.stopLocationUpdate()
     }
 
+    /**
+     * 必要な権限（ロケーション）要求結果。
+     * //TODO フラグメントの見栄えがよくないのでどこかに移したい
+     */
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -91,6 +103,12 @@ class MainFragment : Fragment() {
         }
     }
 
+    /**
+     * 必要な権限を保持しているか確認する
+     * //TODO フラグメントの見栄えがよくないのでどこかに移したい
+     *
+     * @return 確認結果（ture: 保持してる、 false: 保持していない）
+     */
     private fun checkRequiredPermissions() : Boolean {
         var result = true
 
@@ -105,6 +123,9 @@ class MainFragment : Fragment() {
         return result
     }
 
+    /**
+     * 必要な権限を要求する
+     */
     private fun requestRequiredPermissions() {
         locationPermissionRequest.launch(arrayOf(
 //            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
