@@ -1,9 +1,12 @@
 package com.example.footprints.model.repository
 
+import android.content.Context
 import android.location.Location
 import com.example.footprints.model.api.MyLocationClient
 import com.example.footprints.model.dao.MyLocationDao
 import com.example.footprints.model.entity.MyLocation
+import com.example.footprints.model.util.MyLocationUtil
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -18,6 +21,7 @@ import javax.inject.Inject
  * @property dao ロケーションDAO
  */
 class LocationRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val client: MyLocationClient,
     private val dao: MyLocationDao
 ) : LocationRepository {
@@ -52,7 +56,7 @@ class LocationRepositoryImpl @Inject constructor(
      * @return ロケーションから導き出された住所（文字列）
      */
     override fun convertLocationToAddress(location: Location): String {
-        return client.convertLocationToAddress(location)
+        return MyLocationUtil.convertLocationToAddress(context, location)
     }
 
     /**

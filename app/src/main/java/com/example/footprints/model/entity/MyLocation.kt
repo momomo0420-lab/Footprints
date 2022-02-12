@@ -1,6 +1,7 @@
 package com.example.footprints.model.entity
 
 import android.os.Parcelable
+import android.text.format.DateFormat
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -24,3 +25,15 @@ data class MyLocation(
     @ColumnInfo(name = "date_and_time")
     val dateAndTime: Long
 ) : Parcelable
+
+/**
+ * 日時を変換する
+ *
+ * @return 変換した日時
+ */
+fun MyLocation.convertDateAndTimeToMyFormat() : String {
+    return DateFormat.format(
+        "yyyy-MM-dd hh:mm:ss",
+        dateAndTime
+    ).toString()
+}

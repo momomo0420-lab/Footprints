@@ -1,6 +1,5 @@
 package com.example.footprints.ui.main
 
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.footprints.databinding.MyLocationListItemBinding
 import com.example.footprints.model.entity.MyLocation
+import com.example.footprints.model.entity.convertDateAndTimeToMyFormat
 
 /**
  * MyLocationアダプタ
@@ -38,11 +38,7 @@ class MyLocationAdapter(
         fun bindTo(myLocation: MyLocation) {
             binding.apply {
                 address.text = myLocation.address
-
-                dateAndTime.text = DateFormat.format(
-                    "yyyy-MM-dd hh:mm:ss",
-                    myLocation.dateAndTime
-                )
+                dateAndTime.text = myLocation.convertDateAndTimeToMyFormat()
             }
         }
     }
