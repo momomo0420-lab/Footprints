@@ -5,7 +5,6 @@ import android.location.Geocoder
 import android.location.Location
 
 object MyLocationUtil {
-    //TODO この処理本当にここでいいの？
     /**
      * 引数のロケーションを住所（文字列）に変換する
      *

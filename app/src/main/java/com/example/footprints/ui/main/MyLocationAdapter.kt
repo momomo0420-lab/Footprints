@@ -47,7 +47,7 @@ class MyLocationAdapter(
      * ビューホルダーの作成
      *
      * @param parent ビューグループ
-     * @param viewType //TODo わからん
+     * @param viewType //TODO わからん
      * @return ビューホルダー
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
