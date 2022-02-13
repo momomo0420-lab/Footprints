@@ -38,44 +38,40 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter =  MyLocationAdapter(onItemSelectedLister)
+        val adapter =  MyLocationAdapter(getOnItemSelectedListener())
 
         binding.recycler.adapter = adapter
-
-        val checkResult = checkRequiredPermissions()
-        if(!checkResult) {
-            requestRequiredPermissions()
-        }
-
         viewModel.myLocationList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
     }
 
-    //TODO リスト選択された際の動作。後日ちゃんと作成するかも・・・
-    private val onItemSelectedLister = object : (MyLocation) -> Unit {
-        override fun invoke(myLocation: MyLocation) {
-            val action = MainFragmentDirections.actionMainFragmentToDetailFragment(myLocation)
-            findNavController().navigate(action)
+    /**
+     * リスト選択選択時の動作用リスナーを取得する
+     *
+     * @return リスト選択選択時の動作用リスナー
+     */
+    private fun getOnItemSelectedListener(): (MyLocation) -> Unit {
+        return object : (MyLocation) -> Unit {
+            override fun invoke(p1: MyLocation) {
+                val action = MainFragmentDirections.actionMainFragmentToDetailFragment(p1)
+                findNavController().navigate(action)
+            }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 
     /**
      * スタートボタンが押された際の動作
      */
     fun onClickStartButton() {
-        if(!checkRequiredPermissions()) {
-            requestRequiredPermissions()
-            return
-        }
         viewModel.startLocationUpdate()
     }
 
@@ -86,50 +82,4 @@ class MainFragment : Fragment() {
         viewModel.stopLocationUpdate()
     }
 
-    /**
-     * 必要な権限（ロケーション）要求結果。
-     * //TODO フラグメントの見栄えがよくないのでどこかに移したい
-     */
-    private val locationPermissionRequest = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        when {
-            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-            }
-            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-            }
-            else -> {
-            }
-        }
-    }
-
-    /**
-     * 必要な権限を保持しているか確認する
-     * //TODO フラグメントの見栄えがよくないのでどこかに移したい
-     *
-     * @return 確認結果（ture: 保持してる、 false: 保持していない）
-     */
-    private fun checkRequiredPermissions() : Boolean {
-        var result = true
-
-        val checkResult = ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_COARSE_LOCATION)
-
-        if(checkResult != PackageManager.PERMISSION_GRANTED) {
-            result = false
-        }
-
-        return result
-    }
-
-    /**
-     * 必要な権限を要求する
-     */
-    private fun requestRequiredPermissions() {
-        locationPermissionRequest.launch(arrayOf(
-//            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION))
-    }
 }
