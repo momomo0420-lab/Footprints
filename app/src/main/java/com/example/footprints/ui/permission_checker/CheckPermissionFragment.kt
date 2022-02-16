@@ -1,18 +1,31 @@
 package com.example.footprints.ui.permission_checker
 
 import android.Manifest
-import android.content.pm.PackageManager
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.footprints.R
 import com.example.footprints.databinding.FragmentCheckPermissionBinding
+import com.example.footprints.model.util.MyPermissionsUtil
+
 
 class CheckPermissionFragment : Fragment() {
+    companion object {
+        private val PERMISSIONS_TO_REQUEST = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+
+        private val REQUIRED_PERMISSIONS = PERMISSIONS_TO_REQUEST + Manifest.permission.ACCESS_BACKGROUND_LOCATION
+    }
+
     private var _binding: FragmentCheckPermissionBinding? = null
     private val binding get() = _binding!!
 
@@ -36,10 +49,55 @@ class CheckPermissionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val checkResult = checkRequiredPermissions()
-        if(!checkResult) {
+        gotoNextScreen()
+    }
+
+    /**
+     * 次の画面へ遷移
+     * 権限許可されている場合 -> メイン画面へ
+     * 許可されていない場合 -> 権限の設定画面へ
+     * 一部許可されている場合 -> アプリの詳細設定画面
+     */
+    private fun gotoNextScreen() {
+        val checkResult = MyPermissionsUtil.checkRequiredPermissions(
+            requireContext(),
+            REQUIRED_PERMISSIONS
+        )
+
+        if(checkResult == MyPermissionsUtil.CheckResult.UNAUTHORIZED) {
             requestRequiredPermissions()
+            return
         }
+
+        if(checkResult == MyPermissionsUtil.CheckResult.PARTIALLY_PERMITTED) {
+            showNotificationDialog(
+                getString(R.string.requested_always_allow)
+            )
+            return
+        }
+
+        gotoMainScreen()
+    }
+
+    /**
+     * メイン画面へ遷移
+     */
+    private fun gotoMainScreen() {
+        val action = CheckPermissionFragmentDirections.actionCheckPermissionFragmentToMainFragment()
+        findNavController().navigate(action)
+    }
+
+    /**
+     * アプリ詳細設定画面へ遷移
+     */
+    private fun gotoApplicationDetailScreen() {
+        val packageName = requireContext().packageName
+        val intent = Intent(
+            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.parse("package:$packageName")
+        )
+
+        startActivity(intent)
     }
 
     /**
@@ -48,58 +106,56 @@ class CheckPermissionFragment : Fragment() {
     private val locationPermissionsRequestLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
-            when {
-                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                }
-                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                }
-                else -> {
-                }
+
+        when {
+            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                showNotificationDialog(
+                    getString(R.string.requested_always_allow)
+                )
             }
-    }
-
-    /**
-     * 必要な権限を保持しているか確認する
-     * //TODO フラグメントの見栄えがよくないのでどこかに移したい
-     *
-     * @return 確認結果（ture: 保持してる、 false: 保持していない）
-     */
-    private fun checkRequiredPermissions() : Boolean {
-        var result = true
-
-        val checkResult = ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_COARSE_LOCATION)
-
-        if(checkResult != PackageManager.PERMISSION_GRANTED) {
-            result = false
+            else -> {
+                showNotificationDialog(
+                    getString(R.string.requested_always_allow)
+                            + getString(R.string.request_accurate_location)
+                )
+            }
         }
-
-        return result
     }
 
     /**
      * 必要な権限を要求する
      */
     private fun requestRequiredPermissions() {
-        locationPermissionsRequestLauncher
-            .launch(arrayOf(
-//                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-            )
+        locationPermissionsRequestLauncher.launch(PERMISSIONS_TO_REQUEST)
     }
 
     /**
      * ボタンクリック時の動作
      */
     fun onClick() {
-        if(!checkRequiredPermissions()) {
-            requestRequiredPermissions()
-            return
-        }
+        gotoNextScreen()
+    }
 
-        val action = CheckPermissionFragmentDirections.actionCheckPermissionFragmentToMainFragment()
-        findNavController().navigate(action)
+    /**
+     * ロケーション設定依頼用のダイアログを表示
+     */
+    private fun showNotificationDialog(notice: String) {
+        RequestPermissionsDialogFragment(
+            notice,
+            notificationDialogListener
+        ).show(parentFragmentManager, "Please set permissions")
+    }
+
+    /**
+     * ダイアログ押下時の動作を実装
+     */
+    private val notificationDialogListener =
+        object : RequestPermissionsDialogFragment.NotificationDialogListener {
+            override fun onDialogPositiveClick(dialog: DialogFragment) {
+                gotoApplicationDetailScreen()
+            }
+
+            override fun onDialogNegativeClick(dialog: DialogFragment) {
+            }
     }
 }

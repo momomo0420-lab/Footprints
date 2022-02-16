@@ -1,16 +1,11 @@
 package com.example.footprints.ui.main
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.footprints.R
 import com.example.footprints.databinding.FragmentMainBinding
 import com.example.footprints.model.entity.MyLocation
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +18,11 @@ class MainFragment : Fragment() {
 
     // ビューモデル
     private val viewModel: MainViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,6 +52,11 @@ class MainFragment : Fragment() {
         viewModel.myLocationList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_star_and_stop, menu)
     }
 
     /**
