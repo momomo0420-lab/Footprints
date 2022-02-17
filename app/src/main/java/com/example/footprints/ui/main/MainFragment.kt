@@ -2,9 +2,12 @@ package com.example.footprints.ui.main
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.example.footprints.R
 import com.example.footprints.databinding.FragmentMainBinding
 import com.example.footprints.model.entity.MyLocation
@@ -46,12 +49,22 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupAppBar(view, R.id.tb_main)
+
         val adapter =  MyLocationAdapter(getOnItemSelectedListener())
 
         binding.recycler.adapter = adapter
         viewModel.myLocationList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
+    }
+
+    private fun setupAppBar(view: View, toolbarId: Int) {
+        val navController = findNavController()
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+
+        val toolbar = view.findViewById<Toolbar>(toolbarId)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

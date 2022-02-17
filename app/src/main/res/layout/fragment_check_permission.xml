@@ -16,7 +16,7 @@
         tools:context=".ui.permission_checker.CheckPermissionFragment">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar2"
+            android:id="@+id/tb_check_permission"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/purple_700"

@@ -8,9 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.example.footprints.R
 import com.example.footprints.databinding.FragmentCheckPermissionBinding
 import com.example.footprints.model.util.MyPermissionsUtil
@@ -49,7 +52,17 @@ class CheckPermissionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupAppBar(view, R.id.tb_check_permission)
+
         gotoNextScreen()
+    }
+
+    private fun setupAppBar(view: View, toolbarId: Int) {
+        val navController = findNavController()
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+
+        val toolbar = view.findViewById<Toolbar>(toolbarId)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
     /**

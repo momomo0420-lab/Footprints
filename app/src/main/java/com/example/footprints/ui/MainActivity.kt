@@ -16,13 +16,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // トップアプリバーの設定
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-        val navController = navHostFragment.navController
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.checkPermissionFragment, R.id.mainFragment)
-        )
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.setupWithNavController(navController, appBarConfiguration)
+//        val navHostFragment =
+//            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+//        val navController = navHostFragment.navController
+//        val appBarConfiguration = AppBarConfiguration(
+//            setOf(R.id.checkPermissionFragment, R.id.mainFragment)
+//        )
+//        val toolbar = findViewById<Toolbar>(R.id.tb_detail)
+//        toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 }
