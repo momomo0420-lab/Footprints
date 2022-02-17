@@ -6,14 +6,14 @@
     <data>
         <variable
             name="handler"
-            type="com.example.footprints.ui.permission_checker.CheckPermissionFragment" />
+            type="com.example.footprints.ui.permission_checker.RequestPermissionsFragment" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.permission_checker.CheckPermissionFragment">
+        tools:context=".ui.permission_checker.RequestPermissionsFragment">
 
         <Button
             android:id="@+id/go_to_main_fragment"

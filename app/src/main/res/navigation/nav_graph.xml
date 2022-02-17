@@ -3,19 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/checkPermissionFragment">
+    app:startDestination="@id/mainFragment">
 
     <fragment
         android:id="@+id/checkPermissionFragment"
-        android:name="com.example.footprints.ui.permission_checker.CheckPermissionFragment"
+        android:name="com.example.footprints.ui.permission_checker.RequestPermissionsFragment"
         android:label="CheckPermissionFragment"
-        tools:layout="@layout/fragment_check_permission">
-        <action
-            android:id="@+id/action_checkPermissionFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:popUpTo="@id/checkPermissionFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_request_permissions"/>
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.example.footprints.ui.main.MainFragment"

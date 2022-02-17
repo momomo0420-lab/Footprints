@@ -11,31 +11,23 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.footprints.Constants.AppConstants
 import com.example.footprints.R
-import com.example.footprints.databinding.FragmentCheckPermissionBinding
+import com.example.footprints.databinding.FragmentRequestPermissionsBinding
 import com.example.footprints.model.util.MyPermissionsUtil
 
 
-class CheckPermissionFragment : Fragment() {
-    companion object {
-        private val PERMISSIONS_TO_REQUEST = arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-
-        private val REQUIRED_PERMISSIONS = PERMISSIONS_TO_REQUEST + Manifest.permission.ACCESS_BACKGROUND_LOCATION
-    }
-
-    private var _binding: FragmentCheckPermissionBinding? = null
+class RequestPermissionsFragment : Fragment() {
+    private var _binding: FragmentRequestPermissionsBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentCheckPermissionBinding.inflate(inflater, container, false)
+        _binding = FragmentRequestPermissionsBinding.inflate(inflater, container, false)
         binding.apply {
-            handler = this@CheckPermissionFragment
+            handler = this@RequestPermissionsFragment
             lifecycleOwner = viewLifecycleOwner
         }
         return binding.root
@@ -61,7 +53,7 @@ class CheckPermissionFragment : Fragment() {
     private fun gotoNextScreen() {
         val checkResult = MyPermissionsUtil.checkRequiredPermissions(
             requireContext(),
-            REQUIRED_PERMISSIONS
+            AppConstants.REQUIRED_PERMISSIONS
         )
 
         if(checkResult == MyPermissionsUtil.CheckResult.UNAUTHORIZED) {
@@ -83,8 +75,10 @@ class CheckPermissionFragment : Fragment() {
      * メイン画面へ遷移
      */
     private fun gotoMainScreen() {
-        val action = CheckPermissionFragmentDirections.actionCheckPermissionFragmentToMainFragment()
-        findNavController().navigate(action)
+//        val action = CheckPermissionFragmentDirections.actionCheckPermissionFragmentToMainFragment()
+//        findNavController().navigate(action)
+        findNavController().popBackStack()
+//        findNavController().navigate(R.id.mainFragment)
     }
 
     /**
@@ -126,7 +120,7 @@ class CheckPermissionFragment : Fragment() {
      * 必要な権限を要求する
      */
     private fun requestRequiredPermissions() {
-        locationPermissionsRequestLauncher.launch(PERMISSIONS_TO_REQUEST)
+        locationPermissionsRequestLauncher.launch(AppConstants.REQUESTBLE_PERMISSIONS)
     }
 
     /**
