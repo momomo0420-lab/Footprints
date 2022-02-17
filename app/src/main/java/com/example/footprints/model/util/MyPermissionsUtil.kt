@@ -26,7 +26,8 @@ object MyPermissionsUtil {
     ) : CheckResult {
         var result = CheckResult.ALL_GRANTED
 
-        var i = 0
+        var errorCount = 0
+        var errorPermission = ""
 
         for(requiredPermission in requiredPermissions) {
             val checkResult = ContextCompat.checkSelfPermission(
@@ -35,14 +36,14 @@ object MyPermissionsUtil {
 
             if(checkResult != PackageManager.PERMISSION_GRANTED) {
                 result = CheckResult.UNAUTHORIZED
+                errorPermission = requiredPermission
+                errorCount++
                 break
             }
-
-            i++
         }
 
-        if((result == CheckResult.UNAUTHORIZED)
-            && (i == requiredPermissions.size)) {
+        if((errorCount == 1)
+            && (errorPermission == Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
             result = CheckResult.PARTIALLY_PERMITTED
         }
 
