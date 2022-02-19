@@ -10,7 +10,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.footprints.Constants.AppConstants
 import com.example.footprints.R
 import com.example.footprints.model.util.MyPermissionsUtil
-import com.example.footprints.ui.permission_checker.RequestPermissionsFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
         val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.checkPermissionFragment, R.id.mainFragment)
+            setOf(R.id.requestPermissionFragment, R.id.mainFragment)
         )
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.setupWithNavController(navController, appBarConfiguration)
@@ -50,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             this, AppConstants.REQUIRED_PERMISSIONS
         )
         if(checkResult == MyPermissionsUtil.CheckResult.ALL_GRANTED) {
-            viewModel.setLocationClientIsEnabled(true)
+            viewModel.setHasPermissions(true)
         }
     }
 }

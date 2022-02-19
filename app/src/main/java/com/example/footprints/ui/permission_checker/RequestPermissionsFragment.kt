@@ -10,16 +10,21 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import com.example.footprints.Constants.AppConstants
 import com.example.footprints.R
 import com.example.footprints.databinding.FragmentRequestPermissionsBinding
 import com.example.footprints.model.util.MyPermissionsUtil
+import com.example.footprints.ui.SharedViewModel
 
 
 class RequestPermissionsFragment : Fragment() {
     private var _binding: FragmentRequestPermissionsBinding? = null
     private val binding get() = _binding!!
+
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,6 +73,7 @@ class RequestPermissionsFragment : Fragment() {
             return
         }
 
+        sharedViewModel.setHasPermissions(true)
         gotoMainScreen()
     }
 
@@ -75,10 +81,7 @@ class RequestPermissionsFragment : Fragment() {
      * メイン画面へ遷移
      */
     private fun gotoMainScreen() {
-//        val action = CheckPermissionFragmentDirections.actionCheckPermissionFragmentToMainFragment()
-//        findNavController().navigate(action)
-        findNavController().popBackStack()
-//        findNavController().navigate(R.id.mainFragment)
+        findNavController().navigate(R.id.mainFragment)
     }
 
     /**
@@ -132,6 +135,8 @@ class RequestPermissionsFragment : Fragment() {
 
     /**
      * ロケーション設定依頼用のダイアログを表示
+     *
+     * @param notice 通知文
      */
     private fun showNotificationDialog(notice: String) {
         RequestPermissionsDialogFragment(

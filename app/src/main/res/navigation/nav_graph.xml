@@ -6,7 +6,7 @@
     app:startDestination="@id/mainFragment">
 
     <fragment
-        android:id="@+id/checkPermissionFragment"
+        android:id="@+id/requestPermissionFragment"
         android:name="com.example.footprints.ui.permission_checker.RequestPermissionsFragment"
         android:label="CheckPermissionFragment"
         tools:layout="@layout/fragment_request_permissions"/>

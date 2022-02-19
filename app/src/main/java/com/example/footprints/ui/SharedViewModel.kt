@@ -11,10 +11,10 @@ import javax.inject.Inject
 class SharedViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _locationClientIsEnabled = MutableLiveData(false)
-    val locationClientIsEnabled: LiveData<Boolean> get() =  _locationClientIsEnabled
+    private val _hasPermissions = MutableLiveData(false)
+    val hasPermissions: LiveData<Boolean> get() =  _hasPermissions
 
-    fun setLocationClientIsEnabled(boolean: Boolean) {
-        _locationClientIsEnabled.value = boolean
+    fun setHasPermissions(boolean: Boolean) {
+        _hasPermissions.value = boolean
     }
 }
