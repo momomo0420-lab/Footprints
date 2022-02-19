@@ -2,10 +2,13 @@ package com.example.footprints.ui.main
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.example.footprints.R
 import com.example.footprints.databinding.FragmentMainBinding
 import com.example.footprints.model.entity.MyLocation
@@ -23,11 +26,6 @@ class MainFragment : Fragment() {
     // ビューモデル
     private val viewModel: MainViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,10 +40,6 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_star_and_stop, menu)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
@@ -54,6 +48,8 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolbar()
+
         if(!sharedViewModel.hasPermissions.value!!) {
             val controller = findNavController()
             controller.navigate(R.id.requestPermissionFragment)
@@ -61,6 +57,49 @@ class MainFragment : Fragment() {
         }
 
         setupMyLocationList()
+    }
+
+    /**
+     * アプリバーの設定
+     */
+    private fun setupToolbar() {
+        val navController = findNavController()
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.requestPermissionFragment, R.id.mainFragment)
+        )
+
+        val toolbar = binding.toolbarMain
+        toolbar.inflateMenu(R.menu.menu_main)
+        toolbar.setOnMenuItemClickListener(getOnMenuItemClickListener())
+        toolbar.setupWithNavController(navController, appBarConfiguration)
+
+        viewModel.startButtonIsEnabled.observe(viewLifecycleOwner) {
+            val itemStart = toolbar.menu.findItem(R.id.action_start)
+            itemStart.isEnabled = it
+        }
+
+        viewModel.stopButtonIsEnabled.observe(viewLifecycleOwner) {
+            val itemStop = toolbar.menu.findItem(R.id.action_stop)
+            itemStop.isEnabled = it
+        }
+    }
+
+    private fun getOnMenuItemClickListener(): Toolbar.OnMenuItemClickListener {
+        return Toolbar.OnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.action_start -> {
+                    onClickStartButton()
+                    true
+                }
+                R.id.action_stop -> {
+                    onClickStopButton()
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
     }
 
     private fun setupMyLocationList() {
@@ -89,15 +128,14 @@ class MainFragment : Fragment() {
     /**
      * スタートボタンが押された際の動作
      */
-    fun onClickStartButton() {
+    private fun onClickStartButton() {
         viewModel.startLocationUpdate()
     }
 
     /**
      * ストップボタンが押された際の動作
      */
-    fun onClickStopButton() {
+    private fun onClickStopButton() {
         viewModel.stopLocationUpdate()
     }
-
 }

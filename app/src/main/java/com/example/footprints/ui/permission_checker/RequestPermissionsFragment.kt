@@ -11,8 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.example.footprints.Constants.AppConstants
 import com.example.footprints.R
 import com.example.footprints.databinding.FragmentRequestPermissionsBinding
@@ -46,7 +47,22 @@ class RequestPermissionsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolbar()
+
         gotoNextScreen()
+    }
+
+    /**
+     * アプリバーの設定
+     */
+    private fun setupToolbar() {
+        val navController = findNavController()
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.requestPermissionFragment, R.id.mainFragment)
+        )
+
+        val toolbar = binding.toolbarRequestPermissions
+        toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
     /**

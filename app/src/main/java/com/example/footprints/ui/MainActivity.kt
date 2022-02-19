@@ -20,25 +20,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // トップアプリバーの設定
-        setupAppBar()
-
         // 必要な権限が存在するか確認
         checkRequiredPermissions()
-    }
-
-    /**
-     * トップアプリバーを設定する
-     */
-    private fun setupAppBar() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-        val navController = navHostFragment.navController
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.requestPermissionFragment, R.id.mainFragment)
-        )
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
     /**
