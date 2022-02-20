@@ -33,7 +33,7 @@ data class MyLocation(
  */
 fun MyLocation.convertDateAndTimeToMyFormat() : String {
     return DateFormat.format(
-        "yyyy-MM-dd hh:mm:ss",
+        "yyyy-MM-dd HH:mm:ss",
         dateAndTime
     ).toString()
 }
