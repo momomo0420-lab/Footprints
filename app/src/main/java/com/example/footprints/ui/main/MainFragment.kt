@@ -73,9 +73,9 @@ class MainFragment : Fragment() {
 
         viewModel.isRunnable.observe(viewLifecycleOwner) {
             val itemStart = toolbar.menu.findItem(R.id.action_start)
-            itemStart.isEnabled = it
+            itemStart.isVisible = it
             val itemStop = toolbar.menu.findItem(R.id.action_stop)
-            itemStop.isEnabled = !it
+            itemStop.isVisible = !it
         }
     }
 
