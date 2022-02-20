@@ -22,18 +22,11 @@ class MainViewModel @Inject constructor(
     val myLocationList = repository.loadAll().asLiveData()
 
     /**
-     * ボタンの状態を切り替える
-     */
-    private fun switchRunnableFlag() {
-        _isRunnable.value = !_isRunnable.value!!
-    }
-
-    /**
      * 定期的にロケーションを取得する
      */
     fun startLocationUpdate() {
         repository.startLocationUpdate(getOnLocationUpdateListener())
-        switchRunnableFlag()
+        _isRunnable.value = false
     }
 
     /**
@@ -73,6 +66,6 @@ class MainViewModel @Inject constructor(
      */
     fun stopLocationUpdate() {
         repository.stopLocationUpdate()
-        switchRunnableFlag()
+        _isRunnable.value = true
     }
 }
