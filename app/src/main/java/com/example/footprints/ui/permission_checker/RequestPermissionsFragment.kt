@@ -8,13 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import com.example.footprints.Constants.AppConstants
 import com.example.footprints.R
 import com.example.footprints.databinding.FragmentRequestPermissionsBinding
@@ -48,22 +46,15 @@ class RequestPermissionsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
-
-        gotoNextScreen()
+        setupAppBar()
     }
 
     /**
-     * アプリバーの設定
+     * アプリバーの設定を行う
      */
-    private fun setupToolbar() {
-        val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.requestPermissionFragment)
-        )
-
-        val toolbar = binding.toolbarRequestPermissions
-        toolbar.setupWithNavController(navController, appBarConfiguration)
+    private fun setupAppBar() {
+        val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar_main_activity)
+        toolbar.menu.clear()
     }
 
     /**
@@ -98,10 +89,8 @@ class RequestPermissionsFragment : Fragment() {
      * メイン画面へ遷移
      */
     private fun gotoMainScreen() {
-        val navOptions = NavOptions.Builder()
-            .setPopUpTo(R.id.requestPermissionFragment, true)
-            .build()
-        findNavController().navigate(R.id.mainFragment, null, navOptions)
+        val action = RequestPermissionsFragmentDirections.actionRequestPermissionFragmentToMainFragment()
+        findNavController().navigate(action)
     }
 
     /**

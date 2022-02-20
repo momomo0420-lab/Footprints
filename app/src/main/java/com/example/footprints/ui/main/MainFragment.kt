@@ -6,10 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import com.example.footprints.R
 import com.example.footprints.databinding.FragmentMainBinding
 import com.example.footprints.model.entity.MyLocation
@@ -49,29 +46,30 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
+        // アプリバーの設定
+        setupAppBar()
 
+        // 必要な権限がない場合、権限要求画面に移動する
         if(!sharedViewModel.hasPermissions.value!!) {
-            val navOptions = NavOptions.Builder().setPopUpTo(R.id.mainFragment, true).build()
-            val controller = findNavController()
-            controller.navigate(R.id.requestPermissionFragment, null, navOptions)
+            val action = MainFragmentDirections.actionMainFragmentToRequestPermissionFragment()
+            findNavController().navigate(action)
             return
         }
 
+        // ロケーションリストの設定
         setupMyLocationList()
     }
 
     /**
      * アプリバーの設定
      */
-    private fun setupToolbar() {
-        val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-
-        val toolbar = binding.toolbarMain
-        toolbar.inflateMenu(R.menu.menu_main)
-        toolbar.setOnMenuItemClickListener(getOnMenuItemClickListener())
-        toolbar.setupWithNavController(navController, appBarConfiguration)
+    private fun setupAppBar() {
+        val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar_main_activity)
+        toolbar.apply {
+            menu.clear()
+            inflateMenu(R.menu.menu_main)
+            setOnMenuItemClickListener(getOnMenuItemClickListener())
+        }
 
         viewModel.isRunnable.observe(viewLifecycleOwner) {
             val itemStart = toolbar.menu.findItem(R.id.action_start)

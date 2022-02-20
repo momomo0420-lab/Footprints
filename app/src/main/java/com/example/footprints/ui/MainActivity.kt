@@ -3,6 +3,10 @@ package com.example.footprints.ui
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.example.footprints.Constants.AppConstants
 import com.example.footprints.R
 import com.example.footprints.model.util.MyPermissionsUtil
@@ -16,8 +20,25 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setupAppBar()
+
         // 必要な権限が存在するか確認
         checkRequiredPermissions()
+    }
+
+    /**
+     * アプリバーの設定を行う
+     */
+    private fun setupAppBar() {
+        val configuration = AppBarConfiguration(
+            setOf(R.id.requestPermissionFragment, R.id.mainFragment)
+        )
+
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val controller = navHostFragment.navController
+        val toolbar = findViewById<Toolbar>(R.id.toolbar_main_activity)
+        toolbar.setupWithNavController(controller, configuration)
     }
 
     /**

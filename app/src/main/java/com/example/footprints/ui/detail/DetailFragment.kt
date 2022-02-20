@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
+import com.example.footprints.R
 import com.example.footprints.databinding.FragmentDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,7 +38,7 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
+        setupAppBar()
 
         val myLocation = args.myLocation
         viewModel.setText(myLocation.address)
@@ -48,12 +47,9 @@ class DetailFragment : Fragment() {
     /**
      * アプリバーの設定
      */
-    private fun setupToolbar() {
-        val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-
-        val toolbar = binding.toolbarDetail
-        toolbar.setupWithNavController(navController, appBarConfiguration)
+    private fun setupAppBar() {
+        val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar_main_activity)
+        toolbar.menu.clear()
     }
 
     override fun onDestroy() {
