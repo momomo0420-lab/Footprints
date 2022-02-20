@@ -1,14 +1,15 @@
 package com.example.footprints.ui.detail
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.example.footprints.R
 import com.example.footprints.databinding.FragmentDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,12 +50,9 @@ class DetailFragment : Fragment() {
      */
     private fun setupToolbar() {
         val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.requestPermissionFragment, R.id.mainFragment)
-        )
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
 
         val toolbar = binding.toolbarDetail
-//        toolbar.inflateMenu(R.menu.menu_detail)
         toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 

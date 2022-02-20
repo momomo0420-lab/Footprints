@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -51,8 +52,9 @@ class MainFragment : Fragment() {
         setupToolbar()
 
         if(!sharedViewModel.hasPermissions.value!!) {
+            val navOptions = NavOptions.Builder().setPopUpTo(R.id.mainFragment, true).build()
             val controller = findNavController()
-            controller.navigate(R.id.requestPermissionFragment)
+            controller.navigate(R.id.requestPermissionFragment, null, navOptions)
             return
         }
 
@@ -64,23 +66,18 @@ class MainFragment : Fragment() {
      */
     private fun setupToolbar() {
         val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.requestPermissionFragment, R.id.mainFragment)
-        )
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
 
         val toolbar = binding.toolbarMain
         toolbar.inflateMenu(R.menu.menu_main)
         toolbar.setOnMenuItemClickListener(getOnMenuItemClickListener())
         toolbar.setupWithNavController(navController, appBarConfiguration)
 
-        viewModel.startButtonIsEnabled.observe(viewLifecycleOwner) {
+        viewModel.isRunnable.observe(viewLifecycleOwner) {
             val itemStart = toolbar.menu.findItem(R.id.action_start)
             itemStart.isEnabled = it
-        }
-
-        viewModel.stopButtonIsEnabled.observe(viewLifecycleOwner) {
             val itemStop = toolbar.menu.findItem(R.id.action_stop)
-            itemStop.isEnabled = it
+            itemStop.isEnabled = !it
         }
     }
 

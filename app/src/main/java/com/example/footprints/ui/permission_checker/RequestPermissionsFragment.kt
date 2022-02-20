@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -58,7 +59,7 @@ class RequestPermissionsFragment : Fragment() {
     private fun setupToolbar() {
         val navController = findNavController()
         val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.requestPermissionFragment, R.id.mainFragment)
+            setOf(R.id.requestPermissionFragment)
         )
 
         val toolbar = binding.toolbarRequestPermissions
@@ -77,12 +78,12 @@ class RequestPermissionsFragment : Fragment() {
             AppConstants.REQUIRED_PERMISSIONS
         )
 
-        if(checkResult == MyPermissionsUtil.CheckResult.UNAUTHORIZED) {
+        if(checkResult == MyPermissionsUtil.PermissionsState.UNAUTHORIZED) {
             requestRequiredPermissions()
             return
         }
 
-        if(checkResult == MyPermissionsUtil.CheckResult.PARTIALLY_PERMITTED) {
+        if(checkResult == MyPermissionsUtil.PermissionsState.DO_NOT_HAVE_ONLY_BACKGROUND_LOCATION) {
             showNotificationDialog(
                 getString(R.string.requested_always_allow)
             )
@@ -97,7 +98,10 @@ class RequestPermissionsFragment : Fragment() {
      * メイン画面へ遷移
      */
     private fun gotoMainScreen() {
-        findNavController().navigate(R.id.mainFragment)
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.requestPermissionFragment, true)
+            .build()
+        findNavController().navigate(R.id.mainFragment, null, navOptions)
     }
 
     /**

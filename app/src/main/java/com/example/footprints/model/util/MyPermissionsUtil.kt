@@ -6,9 +6,9 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 
 object MyPermissionsUtil {
-    enum class CheckResult {
+    enum class PermissionsState {
         ALL_GRANTED,
-        PARTIALLY_PERMITTED,
+        DO_NOT_HAVE_ONLY_BACKGROUND_LOCATION,
         UNAUTHORIZED
     }
 
@@ -17,14 +17,14 @@ object MyPermissionsUtil {
      *
      * @return 確認結果
      *          ALL_GRANTED - 権限をすべて保持している
-     *          PARTIALLY_PERMITTED - 権限を一部保持している
+     *          DO_NOT_HAVE_ONLY_BACKGROUND_LOCATION - バックグラウンドロケーションの権限だけ保持していない
      *          UNAUTHORIZED - 権限を保持していない
      */
     fun checkRequiredPermissions(
         context: Context,
         requiredPermissions: Array<String>
-    ) : CheckResult {
-        var result = CheckResult.ALL_GRANTED
+    ) : PermissionsState {
+        var result = PermissionsState.ALL_GRANTED
 
         var errorCount = 0
         var errorPermission = ""
@@ -35,7 +35,7 @@ object MyPermissionsUtil {
                 requiredPermission)
 
             if(checkResult != PackageManager.PERMISSION_GRANTED) {
-                result = CheckResult.UNAUTHORIZED
+                result = PermissionsState.UNAUTHORIZED
                 errorPermission = requiredPermission
                 errorCount++
                 break
@@ -44,7 +44,7 @@ object MyPermissionsUtil {
 
         if((errorCount == 1)
             && (errorPermission == Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
-            result = CheckResult.PARTIALLY_PERMITTED
+            result = PermissionsState.DO_NOT_HAVE_ONLY_BACKGROUND_LOCATION
         }
 
         return result

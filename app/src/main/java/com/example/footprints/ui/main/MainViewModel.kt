@@ -13,17 +13,10 @@ class MainViewModel @Inject constructor(
     private val repository: LocationRepository,
     private val workManager: WorkManager
 ) : ViewModel() {
-    // スタートボタンの状態。tureなら待機状態
-    private val _startButtonIsEnabled = MutableLiveData(true)
-    val startButtonIsEnabled: LiveData<Boolean> = _startButtonIsEnabled
 
-    // ストップボタンの状態。tureなら実行状態
-    private val _stopButtonIsEnabled = MutableLiveData(false)
-    val stopButtonIsEnabled: LiveData<Boolean> = _stopButtonIsEnabled
-
-    // 現在の住所
-    private val _currentAddress = MutableLiveData("")
-    val currentAddress: LiveData<String> = _currentAddress
+    // 実行可能状態の確認フラグ
+    private val _isRunnable = MutableLiveData(true)
+    val isRunnable: LiveData<Boolean> get() = _isRunnable
 
     // 保持されているMyLocation全件
     val myLocationList = repository.loadAll().asLiveData()
@@ -32,24 +25,25 @@ class MainViewModel @Inject constructor(
      * ボタンの状態を切り替える
      */
     private fun switchRunnableFlag() {
-        _startButtonIsEnabled.value = !startButtonIsEnabled.value!!
-        _stopButtonIsEnabled.value = !stopButtonIsEnabled.value!!
+        _isRunnable.value = !_isRunnable.value!!
     }
 
     /**
      * 定期的にロケーションを取得する
      */
     fun startLocationUpdate() {
-        repository.startLocationUpdate(listener)
+        repository.startLocationUpdate(getOnLocationUpdateListener())
         switchRunnableFlag()
     }
 
     /**
      * ロケーションを取得した際の動作
      */
-    private val listener = object : (Location) -> Unit {
-        override fun invoke(location: Location) {
-            onLocationUpdate(location)
+    private fun getOnLocationUpdateListener(): (Location) -> Unit {
+        return object : (Location) -> Unit {
+            override fun invoke(p1: Location) {
+                onLocationUpdate(p1)
+            }
         }
     }
 
@@ -60,7 +54,6 @@ class MainViewModel @Inject constructor(
      */
     private fun onLocationUpdate(location: Location) {
         val address = repository.convertLocationToAddress(location)
-        _currentAddress.value = address
 
         viewModelScope.launch {
             try {
