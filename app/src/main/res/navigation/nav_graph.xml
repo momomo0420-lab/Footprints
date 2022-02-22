@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/requestPermissionFragment"
-        android:name="com.example.footprints.ui.permission_checker.RequestPermissionsFragment"
+        android:name="com.example.footprints.ui.request_permissions.RequestPermissionsFragment"
         android:label="権限要求画面"
         tools:layout="@layout/fragment_request_permissions">
         <action

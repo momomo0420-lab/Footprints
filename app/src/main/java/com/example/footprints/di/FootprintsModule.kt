@@ -32,19 +32,10 @@ object FootprintsModule {
         ).build()
     }
 
-
     @Singleton
     @Provides
     fun provideMyLocationDao(db: MyLocationDatabase): MyLocationDao {
         return db.myLocationDao()
-    }
-
-    @Singleton
-    @Provides
-    fun provideWorkManager(
-        @ApplicationContext context: Context
-    ): WorkManager {
-        return WorkManager.getInstance(context)
     }
 }
 

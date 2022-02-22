@@ -1,4 +1,4 @@
-package com.example.footprints.ui.permission_checker
+package com.example.footprints.ui.request_permissions
 
 import android.Manifest
 import android.content.Intent
@@ -13,7 +13,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.footprints.Constants.AppConstants
+import com.example.footprints.constants.AppConstants
 import com.example.footprints.R
 import com.example.footprints.databinding.FragmentRequestPermissionsBinding
 import com.example.footprints.model.util.MyPermissionsUtil

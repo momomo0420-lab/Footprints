@@ -1,4 +1,4 @@
-package com.example.footprints.ui.permission_checker
+package com.example.footprints.ui.request_permissions
 
 import android.app.AlertDialog
 import android.app.Dialog

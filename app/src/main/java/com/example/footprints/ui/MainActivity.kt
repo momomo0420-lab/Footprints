@@ -7,7 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.example.footprints.Constants.AppConstants
+import com.example.footprints.constants.AppConstants
 import com.example.footprints.R
 import com.example.footprints.model.util.MyPermissionsUtil
 import dagger.hilt.android.AndroidEntryPoint
