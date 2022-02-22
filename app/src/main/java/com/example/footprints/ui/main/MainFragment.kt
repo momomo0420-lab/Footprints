@@ -1,17 +1,24 @@
 package com.example.footprints.ui.main
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
 import com.example.footprints.R
 import com.example.footprints.databinding.FragmentMainBinding
 import com.example.footprints.model.entity.MyLocation
 import com.example.footprints.ui.SharedViewModel
+import com.example.footprints.work_manager.LocationUpdateWorker
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
@@ -46,18 +53,34 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // アプリバーの設定
-        setupAppBar()
+//        sharedViewModel.hasPermissions.observe(viewLifecycleOwner) {
+//            if(it) {
+//                // アプリバーの設定
+//                setupAppBar()
+//                // ロケーションリストの設定
+//                setupMyLocationList()
+//            } else {
+//                // 必要な権限がない場合、権限要求画面に移動する
+//                val action = MainFragmentDirections.actionMainFragmentToRequestPermissionFragment()
+//                findNavController().navigate(action)
+//            }
+//        }
+        sharedViewModel.hasPermissions.observe(viewLifecycleOwner, getPermissionsStateObserver())
+    }
 
-        // 必要な権限がない場合、権限要求画面に移動する
-        if(!sharedViewModel.hasPermissions.value!!) {
-            val action = MainFragmentDirections.actionMainFragmentToRequestPermissionFragment()
-            findNavController().navigate(action)
-            return
+    private fun getPermissionsStateObserver(): Observer<Boolean> {
+        return Observer {
+            if(it) {
+                // アプリバーの設定
+                setupAppBar()
+                // ロケーションリストの設定
+                setupMyLocationList()
+            } else {
+                // 必要な権限がない場合、権限要求画面に移動する
+                val action = MainFragmentDirections.actionMainFragmentToRequestPermissionFragment()
+                findNavController().navigate(action)
+            }
         }
-
-        // ロケーションリストの設定
-        setupMyLocationList()
     }
 
     /**
@@ -132,5 +155,14 @@ class MainFragment : Fragment() {
      */
     private fun onClickStopButton() {
         viewModel.stopLocationUpdate()
+    }
+
+    /**
+     * ワークリクエスト作成
+     */
+    private fun createWorkerRequest(): PeriodicWorkRequest {
+        return PeriodicWorkRequestBuilder<LocationUpdateWorker>(
+            15, TimeUnit.MINUTES
+        ).build()
     }
 }

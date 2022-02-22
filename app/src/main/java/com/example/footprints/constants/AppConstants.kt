@@ -1,4 +1,4 @@
-package com.example.footprints.Constants
+package com.example.footprints.constants
 
 import android.Manifest
 
