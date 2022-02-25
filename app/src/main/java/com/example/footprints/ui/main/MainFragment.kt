@@ -16,7 +16,7 @@ import com.example.footprints.R
 import com.example.footprints.databinding.FragmentMainBinding
 import com.example.footprints.model.entity.MyLocation
 import com.example.footprints.ui.SharedViewModel
-import com.example.footprints.work_manager.LocationUpdateWorker
+import com.example.footprints.worker.LocationUpdateCallbackWorker
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
@@ -53,19 +53,10 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        sharedViewModel.hasPermissions.observe(viewLifecycleOwner) {
-//            if(it) {
-//                // アプリバーの設定
-//                setupAppBar()
-//                // ロケーションリストの設定
-//                setupMyLocationList()
-//            } else {
-//                // 必要な権限がない場合、権限要求画面に移動する
-//                val action = MainFragmentDirections.actionMainFragmentToRequestPermissionFragment()
-//                findNavController().navigate(action)
-//            }
-//        }
-        sharedViewModel.hasPermissions.observe(viewLifecycleOwner, getPermissionsStateObserver())
+        sharedViewModel.hasPermissions.observe(
+            viewLifecycleOwner,
+            getPermissionsStateObserver()
+        )
     }
 
     private fun getPermissionsStateObserver(): Observer<Boolean> {
@@ -161,7 +152,7 @@ class MainFragment : Fragment() {
      * ワークリクエスト作成
      */
     private fun createWorkerRequest(): PeriodicWorkRequest {
-        return PeriodicWorkRequestBuilder<LocationUpdateWorker>(
+        return PeriodicWorkRequestBuilder<LocationUpdateCallbackWorker>(
             15, TimeUnit.MINUTES
         ).build()
     }
