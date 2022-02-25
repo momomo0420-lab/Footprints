@@ -1,26 +1,36 @@
 package com.example.footprints.ui.request_permissions
 
 import android.Manifest
+import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.DialogFragment
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.example.footprints.constants.AppConstants
 import com.example.footprints.R
+import com.example.footprints.constants.AppConstants
 import com.example.footprints.databinding.FragmentRequestPermissionsBinding
 import com.example.footprints.model.util.MyPermissionsUtil
 import com.example.footprints.ui.SharedViewModel
 
 
 class RequestPermissionsFragment : Fragment() {
+    companion object {
+        private const val REQUEST_BACKGROUND_LOCATION_PERMISSION = 10
+    }
+
     private var _binding: FragmentRequestPermissionsBinding? = null
     private val binding get() = _binding!!
 
@@ -47,6 +57,24 @@ class RequestPermissionsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupAppBar()
+
+        sharedViewModel.hasPermissions.observe(
+            viewLifecycleOwner,
+            getPermissionsStateObserver()
+        )
+
+    }
+
+    /**
+     * 必要な権限が満たされたらメイン画面へ遷移する
+     */
+    private fun getPermissionsStateObserver(): Observer<Boolean> {
+        return Observer {
+            if(!it) {
+                return@Observer
+            }
+            gotoMainScreen()
+        }
     }
 
     /**
@@ -76,13 +104,13 @@ class RequestPermissionsFragment : Fragment() {
 
         if(checkResult == MyPermissionsUtil.PermissionsState.DO_NOT_HAVE_ONLY_BACKGROUND_LOCATION) {
             showNotificationDialog(
-                getString(R.string.requested_always_allow)
+                getString(R.string.requested_always_allow),
+                getListenerForRequestingBackGroundPermissions()
             )
             return
         }
 
         sharedViewModel.setHasPermissions(true)
-        gotoMainScreen()
     }
 
     /**
@@ -99,7 +127,7 @@ class RequestPermissionsFragment : Fragment() {
     private fun gotoApplicationDetailScreen() {
         val packageName = requireContext().packageName
         val intent = Intent(
-            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            ACTION_APPLICATION_DETAILS_SETTINGS,
             Uri.parse("package:$packageName")
         )
 
@@ -116,13 +144,15 @@ class RequestPermissionsFragment : Fragment() {
         when {
             permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
                 showNotificationDialog(
-                    getString(R.string.requested_always_allow)
+                    getString(R.string.requested_always_allow),
+                    getListenerForRequestingBackGroundPermissions()
                 )
             }
             else -> {
                 showNotificationDialog(
                     getString(R.string.requested_always_allow)
-                            + getString(R.string.request_accurate_location)
+                            + getString(R.string.request_accurate_location),
+                    getListenerForTransitioningToDetailScreen()
                 )
             }
         }
@@ -146,24 +176,46 @@ class RequestPermissionsFragment : Fragment() {
      * ロケーション設定依頼用のダイアログを表示
      *
      * @param notice 通知文
+     * @param positiveClickListener ”はい”押下時の処理リスナー
      */
-    private fun showNotificationDialog(notice: String) {
-        RequestPermissionsDialogFragment(
-            notice,
-            notificationDialogListener
-        ).show(parentFragmentManager, "Please set permissions")
+    private fun showNotificationDialog(
+        notice: String,
+        positiveClickListener: DialogInterface.OnClickListener
+    ) {
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+        dialogBuilder.apply {
+            setTitle("使用上の注意")
+            setMessage(notice)
+            setPositiveButton("はい", positiveClickListener)
+            setNegativeButton("いいえ", null)
+        }
+        dialogBuilder.create().show()
     }
 
     /**
-     * ダイアログ押下時の動作を実装
+     * アプリの詳細画面へ遷移するためのリスナー
      */
-    private val notificationDialogListener =
-        object : RequestPermissionsDialogFragment.NotificationDialogListener {
-            override fun onDialogPositiveClick(dialog: DialogFragment) {
-                gotoApplicationDetailScreen()
-            }
-
-            override fun onDialogNegativeClick(dialog: DialogFragment) {
-            }
+    private fun getListenerForTransitioningToDetailScreen(): DialogInterface.OnClickListener {
+        return DialogInterface.OnClickListener { _, _ ->
+            gotoApplicationDetailScreen()
+        }
     }
+
+    /**
+     * バックグラウンド権限を要求するためのリスナー
+     */
+    private fun getListenerForRequestingBackGroundPermissions(
+    ): DialogInterface.OnClickListener {
+        return DialogInterface.OnClickListener { _, _ ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(ACCESS_BACKGROUND_LOCATION),
+                    REQUEST_BACKGROUND_LOCATION_PERMISSION
+                )
+            }
+        }
+    }
+
+
 }

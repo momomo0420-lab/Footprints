@@ -1,6 +1,7 @@
 package com.example.footprints.model.api
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -30,23 +31,14 @@ class MyLocationClientImpl @Inject constructor(
      *
      * @param listener リスナー
      */
+    @SuppressLint("MissingPermission")
     override fun startLocationUpdate(listener: (Location) -> Unit) {
         this.listener = listener
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-        val locationRequest = createLocationRequest()
-
-        val checkResult = ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-
-        if (checkResult != PackageManager.PERMISSION_GRANTED) {
-            return
-        }
 
         fusedLocationClient.requestLocationUpdates(
-            locationRequest,
+            createLocationRequest(),
             locationCallback,
             Looper.myLooper()!!
         )

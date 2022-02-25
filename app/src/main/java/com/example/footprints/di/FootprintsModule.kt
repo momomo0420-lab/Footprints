@@ -2,7 +2,6 @@ package com.example.footprints.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.work.WorkManager
 import com.example.footprints.model.api.MyLocationClient
 import com.example.footprints.model.api.MyLocationClientImpl
 import com.example.footprints.model.dao.MyLocationDao
