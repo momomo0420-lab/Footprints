@@ -26,6 +26,7 @@ class MainViewModel @Inject constructor(
      */
     fun startLocationUpdate() {
         repository.startLocationUpdate(getOnLocationUpdateListener())
+//        repository.getCurrentLocation(getOnLocationUpdateListener())
         _isRunnable.value = false
     }
 
@@ -36,6 +37,7 @@ class MainViewModel @Inject constructor(
         return object : (Location) -> Unit {
             override fun invoke(p1: Location) {
                 onLocationUpdate(p1)
+//                _isRunnable.value = true
             }
         }
     }
@@ -50,7 +52,7 @@ class MainViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val lastLocation = repository.loadLastLocation()
+                val lastLocation = repository.loadLastAddress()
                 if(address == lastLocation) {
                     return@launch
                 }

@@ -16,7 +16,7 @@ import com.example.footprints.R
 import com.example.footprints.databinding.FragmentMainBinding
 import com.example.footprints.model.entity.MyLocation
 import com.example.footprints.ui.SharedViewModel
-import com.example.footprints.worker.LocationUpdateCallbackWorker
+import com.example.footprints.worker.LocationUpdateWorker
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
@@ -152,7 +152,7 @@ class MainFragment : Fragment() {
      * ワークリクエスト作成
      */
     private fun createWorkerRequest(): PeriodicWorkRequest {
-        return PeriodicWorkRequestBuilder<LocationUpdateCallbackWorker>(
+        return PeriodicWorkRequestBuilder<LocationUpdateWorker>(
             15, TimeUnit.MINUTES
         ).build()
     }

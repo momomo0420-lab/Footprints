@@ -2,6 +2,7 @@ package com.example.footprints.di
 
 import android.content.Context
 import androidx.work.WorkManager
+import com.example.footprints.worker.LocationUpdateWorker
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
