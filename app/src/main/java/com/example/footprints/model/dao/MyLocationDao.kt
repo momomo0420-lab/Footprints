@@ -15,5 +15,5 @@ interface MyLocationDao {
     fun loadAll(): Flow<List<MyLocation>>
 
     @Query("select address from my_location order by date_and_time desc limit 1")
-    suspend fun loadLastLocation(): String
+    suspend fun loadLastAddress(): String
 }

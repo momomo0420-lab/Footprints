@@ -8,6 +8,8 @@ import com.example.footprints.model.dao.MyLocationDao
 import com.example.footprints.model.database.MyLocationDatabase
 import com.example.footprints.model.repository.LocationRepository
 import com.example.footprints.model.repository.LocationRepositoryImpl
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -35,6 +37,14 @@ object FootprintsModule {
     @Provides
     fun provideMyLocationDao(db: MyLocationDatabase): MyLocationDao {
         return db.myLocationDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFusedLocationClient(
+        @ApplicationContext context: Context
+    ): FusedLocationProviderClient {
+        return LocationServices.getFusedLocationProviderClient(context)
     }
 }
 

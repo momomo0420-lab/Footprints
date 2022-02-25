@@ -42,6 +42,12 @@ class LocationRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getCurrentLocation(listener: (Location) -> Unit) {
+        this.listener = listener
+
+        client.getCurrentLocation(listener)
+    }
+
     /**
      * ロケーションの定期取得を終了する
      */
@@ -94,10 +100,10 @@ class LocationRepositoryImpl @Inject constructor(
      *
      * @return MyLocation
      */
-    override suspend fun loadLastLocation(): String {
+    override suspend fun loadLastAddress(): String {
         var address = ""
         withContext(Dispatchers.IO) {
-            address = dao.loadLastLocation()
+            address = dao.loadLastAddress()
         }
         return address
     }
