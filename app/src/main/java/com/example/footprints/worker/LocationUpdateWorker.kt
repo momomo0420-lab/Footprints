@@ -7,6 +7,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.example.footprints.model.repository.LocationRepository
 import com.google.common.util.concurrent.ListenableFuture
+import kotlinx.coroutines.*
 
 class LocationUpdateWorker(
     context: Context,
@@ -14,26 +15,40 @@ class LocationUpdateWorker(
     private val repository: LocationRepository
 ) : ListenableWorker(context, params) {
 
+    // コルーチンスコープ
+    private val scope = CoroutineScope(Job() + Dispatchers.Main)
+
     override fun startWork(): ListenableFuture<Result> {
         return CallbackToFutureAdapter.getFuture {
-            repository.getCurrentLocation(getLocationUpdateListener())
-
-            ""
+//            scope.launch {
+//                repository.getCurrentLocation(getLocationUpdateListener())
+//            }
         }
     }
 
-    private fun getLocationUpdateListener(): (Location) -> Unit {
-        return object : (Location) -> Unit {
-            override fun invoke(location: Location) {
-//                val address = repository.convertLocationToAddress(location)
-//                val lastAddress = repository.loadLastAddress()
+//    private suspend fun getLocationUpdateListener(): (Location) -> Unit = {
+//        withContext(Dispatchers.IO) {
 //
-//                if(address == lastAddress) {
-//                    return
-//                }
-//                repository.insert(location, address)
-            }
-        }
-    }
+//        }
+//    }
 
+//    private suspend fun getLocationUpdateListener(): LocationUpdateListener {
+//        return object : LocationUpdateListener {
+//            override suspend fun onUpdate(location: Location) {
+//                withContext(Dispatchers.IO) {
+//                    val address = repository.convertLocationToAddress(location)
+//                    val lastAddress = repository.loadLastAddress()
+//
+//                    if(address == lastAddress) {
+//                        return@withContext
+//                    }
+//                    repository.insert(location, address)
+//                }
+//            }
+//        }
+//    }
+
+    interface LocationUpdateListener {
+        suspend fun onUpdate(location: Location)
+    }
 }

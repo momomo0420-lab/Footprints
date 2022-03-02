@@ -1,6 +1,7 @@
 package com.example.footprints.di
 
 import android.content.Context
+import android.location.Geocoder
 import androidx.room.Room
 import com.example.footprints.model.api.MyLocationClient
 import com.example.footprints.model.api.MyLocationClientImpl
@@ -45,6 +46,14 @@ object FootprintsModule {
         @ApplicationContext context: Context
     ): FusedLocationProviderClient {
         return LocationServices.getFusedLocationProviderClient(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGeocoder(
+        @ApplicationContext context: Context
+    ): Geocoder {
+        return Geocoder(context)
     }
 }
 
