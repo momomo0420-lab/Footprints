@@ -1,5 +1,6 @@
 package com.example.footprints.ui.main
 
+import android.location.Geocoder
 import android.location.Location
 import androidx.lifecycle.*
 import androidx.work.WorkManager
@@ -11,6 +12,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: LocationRepository,
+    private val geocoder: Geocoder?,
     private val workManager: WorkManager
 ) : ViewModel() {
 
@@ -48,7 +50,10 @@ class MainViewModel @Inject constructor(
      * @param location ロケーション
      */
     private fun onLocationUpdate(location: Location) {
-        val address = repository.convertLocationToAddress(location)
+        val address = geocoder?.let {
+            val addressList = it.getFromLocation(location.latitude, location.longitude, 1)
+            addressList[0].getAddressLine(0).toString()
+        } ?: return
 
         viewModelScope.launch {
             try {
