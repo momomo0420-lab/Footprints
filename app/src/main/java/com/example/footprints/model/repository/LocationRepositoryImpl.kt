@@ -5,7 +5,6 @@ import android.location.Location
 import com.example.footprints.model.api.MyLocationClient
 import com.example.footprints.model.dao.MyLocationDao
 import com.example.footprints.model.entity.MyLocation
-import com.example.footprints.model.util.MyLocationUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -54,16 +53,6 @@ class LocationRepositoryImpl @Inject constructor(
     }
 
     /**
-     * ロケーションを住所（文字列）に変換する
-     *
-     * @param location ロケーション
-     * @return ロケーションから導き出された住所（文字列）
-     */
-    override fun convertLocationToAddress(location: Location): String {
-        return MyLocationUtil.convertLocationToAddress(context, location)
-    }
-
-    /**
      * ロケーションをDBに登録する
      *
      * @param location ロケーション
@@ -98,13 +87,6 @@ class LocationRepositoryImpl @Inject constructor(
      *
      * @return MyLocation
      */
-//    override suspend fun loadLastAddress(): String {
-//        var address = ""
-//        withContext(Dispatchers.IO) {
-//            address = dao.loadLastAddress()
-//        }
-//        return address
-//    }
     override suspend fun loadLastAddress(): String  = withContext(Dispatchers.IO) {
         dao.loadLastAddress()
     }

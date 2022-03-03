@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface LocationRepository {
     fun startLocationUpdate(listener: (Location) -> Unit)
     fun stopLocationUpdate()
-    fun convertLocationToAddress(location: Location): String
     fun getCurrentLocation(listener: (Location) -> Unit)
 
     suspend fun insert(location: Location, address: String)

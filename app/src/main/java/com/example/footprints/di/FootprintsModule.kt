@@ -1,7 +1,6 @@
 package com.example.footprints.di
 
 import android.content.Context
-import android.location.Geocoder
 import androidx.room.Room
 import com.example.footprints.model.api.MyLocationClient
 import com.example.footprints.model.api.MyLocationClientImpl
@@ -9,8 +8,6 @@ import com.example.footprints.model.dao.MyLocationDao
 import com.example.footprints.model.database.MyLocationDatabase
 import com.example.footprints.model.repository.LocationRepository
 import com.example.footprints.model.repository.LocationRepositoryImpl
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -39,22 +36,6 @@ object FootprintsModule {
     fun provideMyLocationDao(db: MyLocationDatabase): MyLocationDao {
         return db.myLocationDao()
     }
-
-    @Singleton
-    @Provides
-    fun provideFusedLocationClient(
-        @ApplicationContext context: Context
-    ): FusedLocationProviderClient {
-        return LocationServices.getFusedLocationProviderClient(context)
-    }
-
-    @Singleton
-    @Provides
-    fun provideGeocoder(
-        @ApplicationContext context: Context
-    ): Geocoder {
-        return Geocoder(context)
-    }
 }
 
 @Module
@@ -65,14 +46,4 @@ abstract class LocationRepositoryModule {
     abstract fun bindLocationRepository(
         impl: LocationRepositoryImpl
     ) : LocationRepository
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class MyLocationClientModule {
-    @Singleton
-    @Binds
-    abstract fun bindMyLocationClient(
-        impl: MyLocationClientImpl
-    ) : MyLocationClient
 }
