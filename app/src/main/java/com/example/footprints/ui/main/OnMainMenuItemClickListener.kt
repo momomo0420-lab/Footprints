@@ -33,14 +33,14 @@ class OnMainMenuItemClickListener(val viewModel: MainViewModel) : Toolbar.OnMenu
      * スタートボタンが押された際の動作
      */
     private fun onStartClick() {
-        viewModel.startLocationUpdate()
+        viewModel.startWorkManager()
     }
 
     /**
      * ストップボタンが押された際の動作
      */
     private fun onStopClick() {
-        viewModel.stopLocationUpdate()
+        viewModel.stopWorkManager()
     }
 
     /**

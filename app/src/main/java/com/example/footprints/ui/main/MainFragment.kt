@@ -10,15 +10,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.work.PeriodicWorkRequest
-import androidx.work.PeriodicWorkRequestBuilder
 import com.example.footprints.R
 import com.example.footprints.databinding.FragmentMainBinding
 import com.example.footprints.model.entity.MyLocation
 import com.example.footprints.ui.SharedViewModel
-import com.example.footprints.worker.LocationUpdateWorker
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
@@ -85,6 +81,8 @@ class MainFragment : Fragment() {
             setOnMenuItemClickListener(OnMainMenuItemClickListener(viewModel))
         }
 
+        viewModel.confirmWorkStartUp()
+
         viewModel.isRunnable.observe(viewLifecycleOwner) {
             val itemStart = toolbar.menu.findItem(R.id.action_start)
             itemStart.isVisible = it
@@ -114,14 +112,5 @@ class MainFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
-    }
-
-    /**
-     * ワークリクエスト作成
-     */
-    private fun createWorkerRequest(): PeriodicWorkRequest {
-        return PeriodicWorkRequestBuilder<LocationUpdateWorker>(
-            15, TimeUnit.MINUTES
-        ).build()
     }
 }

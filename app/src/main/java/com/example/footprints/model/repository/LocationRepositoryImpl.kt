@@ -1,11 +1,9 @@
 package com.example.footprints.model.repository
 
-import android.content.Context
 import android.location.Location
 import com.example.footprints.model.api.MyLocationClient
 import com.example.footprints.model.dao.MyLocationDao
 import com.example.footprints.model.entity.MyLocation
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -20,43 +18,11 @@ import javax.inject.Inject
  * @property dao ロケーションDAO
  */
 class LocationRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val client: MyLocationClient,
     private val dao: MyLocationDao
 ) : LocationRepository {
-
-    // リスナー
-    private lateinit var listener: (Location) -> Unit
-
     /**
-     * ロケーションの定期取得を行い、リスナーに処理を移譲する
-     *
-     * @param listener リスナー
-     */
-    override fun startLocationUpdate(listener: (Location) -> Unit) {
-        this.listener = listener
-
-        client.startLocationUpdate { location ->
-            listener(location)
-        }
-    }
-
-    override fun getCurrentLocation(listener: (Location) -> Unit) {
-        client.getCurrentLocation(listener)
-    }
-
-    /**
-     * ロケーションの定期取得を終了する
-     */
-    override fun stopLocationUpdate() {
-        client.stopLocationUpdate()
-    }
-
-    /**
-     * ロケーションをDBに登録する
-     *
-     * @param location ロケーション
-     * @param address 住所文字列
+     * 現在地と住所（文字列）をDBに登録
      */
     override suspend fun insert(location: Location, address: String) {
         val now = System.currentTimeMillis()
@@ -73,11 +39,23 @@ class LocationRepositoryImpl @Inject constructor(
         }
     }
 
+    /**
+     * DBの全件削除
+     */
     override suspend fun deleteAll() {
         withContext(Dispatchers.IO) {
             dao.deleteAll()
         }
     }
+
+    /**
+     * 現在地を取得
+     */
+    override fun getCurrentLocation(listener: (Location) -> Unit) {
+        client.getCurrentLocation(listener)
+    }
+
+
 
     /**
      * DBに登録されているMyLocationを全件取得
@@ -89,7 +67,7 @@ class LocationRepositoryImpl @Inject constructor(
     }
 
     /**
-     * DBに登録されている最後に取得したMyLocationを取得
+     * DBに登録されている最後に取得した住所を取得
      *
      * @return MyLocation
      */

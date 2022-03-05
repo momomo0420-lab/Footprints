@@ -64,11 +64,6 @@ class MyLocationAdapter(
         return viewHolder
     }
 
-    //TODO 最終的にはレイアウト側にクリック時の動作を配置したい
-//    fun onClick() {
-//        listener("TODO1")
-//    }
-
     /**
      * クリック時の動作。クリックされたアイテムを取得しリスナーに渡す
      */
