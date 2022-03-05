@@ -75,4 +75,13 @@ class MainViewModel @Inject constructor(
         repository.stopLocationUpdate()
         _isRunnable.value = true
     }
+
+    /**
+     * ロケーションリストを削除する
+     */
+    fun deleteLocationList() {
+        viewModelScope.launch {
+            repository.deleteAll()
+        }
+    }
 }

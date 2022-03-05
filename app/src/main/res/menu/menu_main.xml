@@ -11,4 +11,8 @@
         android:icon="@drawable/ic_baseline_stop_circle_24"
         android:title="終了"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_all_delete"
+        android:title="全件削除"
+        app:showAsAction="never" />
 </menu>

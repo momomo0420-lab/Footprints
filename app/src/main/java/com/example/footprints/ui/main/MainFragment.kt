@@ -82,7 +82,7 @@ class MainFragment : Fragment() {
         toolbar.apply {
             menu.clear()
             inflateMenu(R.menu.menu_main)
-            setOnMenuItemClickListener(getOnMenuItemClickListener())
+            setOnMenuItemClickListener(OnMainMenuItemClickListener(viewModel))
         }
 
         viewModel.isRunnable.observe(viewLifecycleOwner) {
@@ -90,24 +90,6 @@ class MainFragment : Fragment() {
             itemStart.isVisible = it
             val itemStop = toolbar.menu.findItem(R.id.action_stop)
             itemStop.isVisible = !it
-        }
-    }
-
-    private fun getOnMenuItemClickListener(): Toolbar.OnMenuItemClickListener {
-        return Toolbar.OnMenuItemClickListener {
-            when(it.itemId) {
-                R.id.action_start -> {
-                    onClickStartButton()
-                    true
-                }
-                R.id.action_stop -> {
-                    onClickStopButton()
-                    true
-                }
-                else -> {
-                    false
-                }
-            }
         }
     }
 
@@ -132,20 +114,6 @@ class MainFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
-    }
-
-    /**
-     * スタートボタンが押された際の動作
-     */
-    private fun onClickStartButton() {
-        viewModel.startLocationUpdate()
-    }
-
-    /**
-     * ストップボタンが押された際の動作
-     */
-    private fun onClickStopButton() {
-        viewModel.stopLocationUpdate()
     }
 
     /**

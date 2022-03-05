@@ -7,11 +7,8 @@ import android.os.Looper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.tasks.CancellationToken
 import com.google.android.gms.tasks.CancellationTokenSource
-import com.google.android.gms.tasks.OnTokenCanceledListener
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -87,7 +84,7 @@ class MyLocationClientImpl @Inject constructor(
     @SuppressLint("MissingPermission")
     override fun getCurrentLocation(listener: (Location) -> Unit) {
         client.getCurrentLocation(
-            PRIORITY_HIGH_ACCURACY,
+            LocationRequest.PRIORITY_HIGH_ACCURACY,
             cancellationTokenSource.token
         )
         .addOnSuccessListener {
