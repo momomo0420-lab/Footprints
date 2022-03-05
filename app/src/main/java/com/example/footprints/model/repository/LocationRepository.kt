@@ -10,7 +10,7 @@ interface LocationRepository {
     fun getCurrentLocation(listener: (Location) -> Unit)
 
     suspend fun insert(location: Location, address: String)
-
+    suspend fun deleteAll()
     fun loadAll(): Flow<List<MyLocation>>
     suspend fun loadLastAddress(): String
 }

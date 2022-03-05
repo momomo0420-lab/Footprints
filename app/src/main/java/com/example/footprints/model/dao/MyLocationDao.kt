@@ -11,6 +11,9 @@ interface MyLocationDao {
     @Insert
     suspend fun insert(myLocation: MyLocation)
 
+    @Query("DELETE FROM my_location" )
+    suspend fun deleteAll()
+
     @Query("select * from my_location order by date_and_time desc")
     fun loadAll(): Flow<List<MyLocation>>
 

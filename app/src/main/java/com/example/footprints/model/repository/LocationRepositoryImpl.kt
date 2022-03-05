@@ -73,6 +73,12 @@ class LocationRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteAll() {
+        withContext(Dispatchers.IO) {
+            dao.deleteAll()
+        }
+    }
+
     /**
      * DBに登録されているMyLocationを全件取得
      *
