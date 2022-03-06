@@ -1,13 +1,12 @@
 package com.example.footprints.worker
 
 import android.content.Context
-import android.location.Geocoder
 import android.location.Location
-import android.util.Log
 import androidx.concurrent.futures.CallbackToFutureAdapter
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.example.footprints.model.repository.LocationRepository
+import com.example.footprints.model.util.MyLocationUtil
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.*
 
@@ -26,40 +25,40 @@ class LocationUpdateWorker(
 
     override fun startWork(): ListenableFuture<Result> {
         return CallbackToFutureAdapter.getFuture { completer ->
-            Log.d(TAG, "Starting startWork()")
+            // 現在地を取得
             repository.getCurrentLocation(
                 getOnLocationUpdateListener(completer)
             )
         }
     }
 
-    override fun onStopped() {
-        super.onStopped()
-        scope.cancel()
-    }
-
+    /**
+     * ロケーション取得時に起動時の動作
+     */
     private fun getOnLocationUpdateListener(
         completer: CallbackToFutureAdapter.Completer<Result>
     ): (Location) -> Unit {
         return object : (Location) -> Unit {
             override fun invoke(location: Location) {
-                val geocoder = Geocoder(applicationContext)
-                val addressList = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                val address = addressList[0].getAddressLine(0).toString()
+                scope.launch {
+                    val address = MyLocationUtil.convertLocationToAddress(
+                        applicationContext,
+                        location
+                    )
+                    val lastAddress = repository.loadLastAddress()
 
-                saveLocationWithAddress(location, address)
+                    if(address != lastAddress) {
+                        repository.insert(location, address)
+                    }
 
-                completer.set(Result.success())
+                    completer.set(Result.success())
+                }
             }
         }
     }
 
-    private fun saveLocationWithAddress(
-        location: Location,
-        address: String
-    ) {
-        scope.launch {
-            repository.insert(location, address)
-        }
+    override fun onStopped() {
+        super.onStopped()
+        scope.cancel()
     }
 }
