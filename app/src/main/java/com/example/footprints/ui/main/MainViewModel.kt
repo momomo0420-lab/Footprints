@@ -2,10 +2,7 @@ package com.example.footprints.ui.main
 
 import android.location.Geocoder
 import androidx.lifecycle.*
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.work.*
 import com.example.footprints.model.repository.LocationRepository
 import com.example.footprints.worker.LocationUpdateWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,12 +27,18 @@ class MainViewModel @Inject constructor(
      * ワーカーが登録されているか確認する
      */
     fun confirmWorkStartUp() {
-        val future = workManager.getWorkInfosForUniqueWork(
+        val workInfoList = workManager.getWorkInfosForUniqueWork(
             LocationUpdateWorker.UNIQUE_WORK_NAME
-        )
+        ).get()
 
-        if(future.get().isNotEmpty()) {
+        if(workInfoList.isNotEmpty()) {
             _isRunnable.value = false
+
+            for(work in workInfoList) {
+                if(work.state != WorkInfo.State.ENQUEUED) {
+                    _isRunnable.value = true
+                }
+            }
         }
     }
 
