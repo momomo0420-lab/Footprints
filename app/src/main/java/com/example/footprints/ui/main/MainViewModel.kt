@@ -1,6 +1,5 @@
 package com.example.footprints.ui.main
 
-import android.location.Geocoder
 import androidx.lifecycle.*
 import androidx.work.*
 import com.example.footprints.model.repository.LocationRepository
