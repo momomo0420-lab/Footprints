@@ -19,9 +19,6 @@ import com.example.footprints.model.entity.convertDateAndTimeToMyFormat
 class MyLocationAdapter(
     private val listener: (MyLocation) -> Unit
 ) : ListAdapter<MyLocation, MyLocationAdapter.ViewHolder>(callback) {
-    // ビューホルダー
-    private lateinit var viewHolder: ViewHolder
-
     /**
      * ビューホルダー
      *
@@ -29,7 +26,7 @@ class MyLocationAdapter(
      */
     class ViewHolder(
         private val binding: MyLocationListItemBinding
-    ): RecyclerView.ViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
         /**
          * リストアイテムの登録
          *
@@ -58,19 +55,14 @@ class MyLocationAdapter(
             false
         )
 
-        binding.root.setOnClickListener(onClickListener)
-        viewHolder = ViewHolder(binding)
-
-        return viewHolder
-    }
-
-    /**
-     * クリック時の動作。クリックされたアイテムを取得しリスナーに渡す
-     */
-    private val onClickListener = View.OnClickListener {
+        val viewHolder = ViewHolder(binding)
+        binding.root.setOnClickListener {
             val position = viewHolder.bindingAdapterPosition
             val myLocation = getItem(position)
             listener(myLocation)
+        }
+
+        return viewHolder
     }
 
     /**
@@ -87,7 +79,6 @@ class MyLocationAdapter(
     companion object {
         /**
          * 差分検知のためのコールバック。
-         * //TODO 正直よくわからん
          */
         private val callback = object : DiffUtil.ItemCallback<MyLocation>() {
             override fun areItemsTheSame(oldItem: MyLocation, newItem: MyLocation): Boolean {

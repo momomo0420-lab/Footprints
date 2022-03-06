@@ -81,6 +81,7 @@ class MainFragment : Fragment() {
             setOnMenuItemClickListener(OnMainMenuItemClickListener(viewModel))
         }
 
+        // ワーカー起動中か確認する
         viewModel.confirmWorkStartUp()
 
         viewModel.isRunnable.observe(viewLifecycleOwner) {
