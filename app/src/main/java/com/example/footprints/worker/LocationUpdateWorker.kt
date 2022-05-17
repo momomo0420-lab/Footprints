@@ -35,6 +35,9 @@ class LocationUpdateWorker(
     /**
      * ロケーション取得時に起動時の動作
      */
+    /**
+     * テスト用コメント
+     */
     private fun getOnLocationUpdateListener(
         completer: CallbackToFutureAdapter.Completer<Result>
     ): (Location) -> Unit {
