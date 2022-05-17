@@ -48,6 +48,9 @@ class LocationUpdateWorker(
 //        }
 //    }
 
+    /**
+     * ブランチテスト用のコメント
+     */
     interface LocationUpdateListener {
         suspend fun onUpdate(location: Location)
     }
